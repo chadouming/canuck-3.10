@@ -33,6 +33,9 @@
 #include <mach/ramdump.h>
 #include <mach/msm_smem.h>
 #include <mach/sysmon.h>
+#ifdef CONFIG_LGE_HANDLE_PANIC
+#include <mach/lge_handle_panic.h>
+#endif
 
 #include "peripheral-loader.h"
 #include "pil-q6v5.h"
@@ -75,6 +78,10 @@ static void log_modem_sfr(void)
 
 	strlcpy(reason, smem_reason, min(size, sizeof(reason)));
 	pr_err("modem subsystem failure reason: %s.\n", reason);
+
+#ifdef CONFIG_LGE_HANDLE_PANIC
+	lge_check_crash_skiped(reason);
+#endif
 
 	smem_reason[0] = '\0';
 	wmb();
