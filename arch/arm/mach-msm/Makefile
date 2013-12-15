@@ -47,10 +47,6 @@ obj-$(CONFIG_MSM_PIL_FEMTO) += pil-q6v5.o pil-msa.o pil-femto-modem.o
 obj-$(CONFIG_MSM_PIL_BCSS) += pil-bcss.o
 obj-$(CONFIG_MSM_BAM_DMUX) += bam_dmux.o
 obj-$(CONFIG_MSM_SMD_LOGGING) += smem_log.o
-obj-$(CONFIG_MSM_IPC_LOGGING) += ipc_logging.o
-ifdef CONFIG_DEBUG_FS
-obj-$(CONFIG_MSM_IPC_LOGGING) += ipc_logging_debug.o
-endif
 obj-y += socinfo.o
 obj-$(CONFIG_MSM_SMD_TTY) += smd_tty.o
 obj-$(CONFIG_MSM_SMD_PKT) += smd_pkt.o
@@ -96,20 +92,15 @@ obj-$(CONFIG_MSM_WATCHDOG_V2) += msm_watchdog_v2.o
 obj-$(CONFIG_MSM_MEMORY_DUMP) += msm_memory_dump.o
 obj-$(CONFIG_PM8921_BMS) += bms-batterydata.o bms-batterydata-desay.o batterydata-lib.o
 obj-$(CONFIG_QPNP_BMS) += bms-batterydata.o bms-batterydata-desay.o batterydata-lib.o
-obj-$(CONFIG_QPNP_BMS) += bms-batterydata-oem.o
-obj-$(CONFIG_MACH_APQ8064_CDP) += board-8064-all.o board-8064-regulator.o
-obj-$(CONFIG_MACH_APQ8064_MTP) += board-8064-all.o board-8064-regulator.o
-obj-$(CONFIG_MACH_APQ8064_LIQUID) += board-8064-all.o board-8064-regulator.o
-obj-$(CONFIG_MACH_MPQ8064_HRD) += board-8064-all.o board-8064-regulator.o board-8064-bt.o
-obj-$(CONFIG_MACH_MPQ8064_DTV) += board-8064-all.o board-8064-regulator.o
-obj-$(CONFIG_ARCH_MSM9615) += board-9615.o devices-9615.o board-9615-regulator.o board-9615-gpiomux.o board-9615-storage.o board-9615-display.o
-obj-$(CONFIG_ARCH_MSM9615) += clock-local.o clock-9615.o acpuclock-9615.o clock-rpm.o clock-pll.o
-obj-$(CONFIG_ARCH_MSMZINC) += board-zinc.o board-zinc-gpiomux.o
+obj-$(CONFIG_QPNP_BMS) += bms-batterydata-oem.o bms-batterydata-qrd-4v35-2000mah.o bms-batterydata-qrd-4v2-1300mah.o
+obj-$(CONFIG_ARCH_APQ8084) += board-8084.o board-8084-gpiomux.o
+obj-$(CONFIG_ARCH_APQ8084) += clock-local2.o clock-pll.o clock-8084.o clock-rpm.o clock-voter.o clock-mdss-8974.o
+obj-$(CONFIG_ARCH_APQ8084) += clock-krait-8974.o
 ifndef CONFIG_MACH_LGE
 obj-$(CONFIG_ARCH_MSM8974) += board-8974.o board-8974-gpiomux.o
 endif
-obj-$(CONFIG_ARCH_MSM8974) += acpuclock-8974.o
-obj-$(CONFIG_ARCH_MSM8974) += clock-local2.o clock-pll.o clock-8974.o clock-rpm.o clock-voter.o clock-mdss-8974.o
+obj-$(CONFIG_ARCH_MSM8974) += clock-krait-8974.o
+obj-$(CONFIG_ARCH_MSM8974) += clock-local2.o clock-pll.o clock-rpm-8974.o clock-gcc-8974.o clock-mmss-8974.o clock-lpass-8974.o clock-rpm.o clock-voter.o clock-mdss-8974.o
 obj-$(CONFIG_ARCH_MSM8974) += gdsc.o
 obj-$(CONFIG_ARCH_MSM8226) += gdsc.o
 obj-$(CONFIG_ARCH_MSM8610) += gdsc.o
@@ -148,8 +139,6 @@ obj-$(CONFIG_MSM_TZ_LOG) += tz_log.o
 obj-$(CONFIG_MSM_BUS_SCALING) += msm_bus/
 obj-$(CONFIG_MSM_BUSPM_DEV) += msm-buspm-dev.o
 
-obj-$(CONFIG_MSM_IOMMU)		+= iommu_domains.o
-
 obj-$(CONFIG_MSM_EVENT_TIMER)		+= event_timer.o
 
 obj-$(CONFIG_MSM_OCMEM) += ocmem.o ocmem_allocator.o ocmem_notifier.o
@@ -181,16 +170,6 @@ obj-$(CONFIG_MSM_RPC_USB) += rpc_hsusb.o rpc_fsusb.o
 
 obj-$(CONFIG_MSM_ENABLE_WDOG_DEBUG_CONTROL) += wdog_debug.o
 
-obj-$(CONFIG_MSM_USE_USER_ACCESSIBLE_TIMERS) += timer_page.o
-
-ifdef CONFIG_MSM_CPR
-obj-$(CONFIG_DEBUG_FS) += msm_cpr-debug.o
-endif
-
-obj-$(CONFIG_MACH_LGE) += lge/
-obj-$(CONFIG_MSM_FIQ) += msm7k_fiq.o
-obj-$(CONFIG_MSM_FIQ) += msm7k_fiq_handler.o
-
 obj-$(CONFIG_MEMORY_HOLE_CARVEOUT) +=  msm_mem_hole.o
 
 obj-$(CONFIG_MSM_SMCMOD) += smcmod.o
@@ -203,3 +182,5 @@ obj-$(CONFIG_CPU_FREQ_MSM) += cpufreq.o
 obj-$(CONFIG_ARCH_RANDOM) += early_random.o
 obj-$(CONFIG_PERFMAP) += perfmap.o
 obj-$(CONFIG_ARCH_MSM8974) += cpubw-krait.o
+
+obj-$(CONFIG_MACH_LGE) += lge/
