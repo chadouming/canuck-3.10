@@ -21,7 +21,7 @@
 #include <linux/iopoll.h>
 #include <linux/kthread.h>
 
-#include <mach/iommu_domains.h>
+#include <linux/msm_iommu_domains.h>
 
 #include "mdss.h"
 #include "mdss_dsi.h"
@@ -1314,6 +1314,8 @@ void mdss_dsi_ack_err_status(struct mdss_dsi_ctrl_pdata *ctrl)
 
 	if (status) {
 		MIPI_OUTP(base + 0x0068, status);
+		/* Writing of an extra 0 needed to clear error bits */
+		MIPI_OUTP(base + 0x0068, 0);
 		pr_err("%s: status=%x\n", __func__, status);
 	}
 }
@@ -1419,9 +1421,11 @@ irqreturn_t mdss_dsi_isr(int irq, void *ptr)
 	struct mdss_dsi_ctrl_pdata *ctrl =
 			(struct mdss_dsi_ctrl_pdata *)ptr;
 
-	if (!ctrl->ctrl_base)
+	if (!ctrl->ctrl_base) {
 		pr_err("%s:%d DSI base adr no Initialized",
-				       __func__, __LINE__);
+						__func__, __LINE__);
+		return IRQ_HANDLED;
+	}
 
 	isr = MIPI_INP(ctrl->ctrl_base + 0x0110);/* DSI_INTR_CTRL */
 	MIPI_OUTP(ctrl->ctrl_base + 0x0110, isr);

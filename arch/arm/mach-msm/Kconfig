@@ -73,6 +73,7 @@ config ARCH_APQ8084
 	select MSM_PIL
 	select ENABLE_VMALLOC_SAVINGS
 	select MSM_ULTRASOUND_B
+	select MSM_MULTIMEDIA_USE_ION
 
 config ARCH_MPQ8092
 	bool "MPQ8092"
@@ -95,6 +96,7 @@ config ARCH_MPQ8092
 	select MSM_RPM_REGULATOR_SMD
 	select PINCTRL
 	select PINCTRL_MSM_TLMM_V3
+	select MSM_MULTIMEDIA_USE_ION
 
 config ARCH_FSM9900
 	bool "FSM9900"
@@ -178,6 +180,7 @@ config ARCH_MSM8610
 	select PINCTRL
 	select PINCTRL_MSM_TLMM_V3
 	select ENABLE_VMALLOC_SAVINGS
+	select MSM_MULTIMEDIA_USE_ION
 
 config ARCH_MSM8226
 	bool "MSM8226"
@@ -219,6 +222,7 @@ config ARCH_MSM8226
 	select PINCTRL
 	select PINCTRL_MSM_TLMM_V3
 	select ENABLE_VMALLOC_SAVINGS
+	select MSM_MULTIMEDIA_USE_ION
 
 config ARCH_MSMSAMARIUM
 	bool "MSMSAMARIUM"
@@ -248,6 +252,7 @@ config ARCH_MSMSAMARIUM
 	select QMI_ENCDEC
 	select PINCTRL
 	select PINCTRL_MSM_TLMM_V3
+	select MSM_MULTIMEDIA_USE_ION
 endmenu
 
 config MSM_KRAIT_TBB_ABORT_HANDLER
@@ -705,13 +710,6 @@ config MSM_SMD_LOGGING
 	  and a debugfs node named smem_log.
 
 	  If in doubt, say yes.
-
-config MSM_IPC_LOGGING
-	bool "MSM Debug Logging for IPC Drivers"
-	help
-	  This option allows the debug logging for IPC Drivers.
-
-	  If in doubt, say no.
 
 config MSM_SMD_TTY
 	bool "SMD TTY Driver"

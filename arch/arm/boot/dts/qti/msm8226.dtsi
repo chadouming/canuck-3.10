@@ -241,6 +241,14 @@
 	qti,msm-imem@fe805000 {
 		compatible = "qti,msm-imem";
 		reg = <0xfe805000 0x1000>; /* Address and size of IMEM */
+		ranges = <0x0 0xfe805000 0x1000>;
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		pil@94c {
+			compatible = "qti,msm-imem-pil";
+			reg = <0x94c 200>;
+		};
 	};
 
 	qcom,sps@f9984000 {
@@ -1026,7 +1034,7 @@
 		qcom,cpufreq-table =
 			<  300000 1600 /* 200 MHz */ >,
 			<  384000 1600 /* 200 MHz */ >,
-			<  600000 3200 /* 320 MHz */ >,
+			<  600000 1600 /* 200 MHz */ >,
 			<  787200 4264 /* 533 MHz */ >,
 			<  998400 4264 /* 533 MHz */ >,
 			< 1094400 4264 /* 533 MHz */ >,

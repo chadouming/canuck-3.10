@@ -164,6 +164,13 @@
 		status = "disabled";
 	};
 
+	blsp1_uart4: serial@f9921000 {
+		compatible = "qcom,msm-lsuart-v14";
+		reg = <0xf9921000 0x1000>;
+		interrupts = <0 111 0>;
+		status = "disabled";
+	};
+
 	blsp1_uart5: serial@f9922000 {
 		compatible = "qcom,msm-lsuart-v14";
 		reg = <0xf9922000 0x1000>;
@@ -172,8 +179,16 @@
 	};
 
 	qti,msm-imem@fe805000 {
-                compatible = "qti,msm-imem";
-                reg = <0xfe805000 0x1000>; /* Address and size of IMEM */
+		compatible = "qti,msm-imem";
+		reg = <0xfe805000 0x1000>; /* Address and size of IMEM */
+		ranges = <0x0 0xfe805000 0x1000>;
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		pil@94c {
+			compatible = "qti,msm-imem-pil";
+			reg = <0x94c 200>;
+		};
 	};
 
 	qcom,usbbam@f9a44000 {
@@ -655,6 +670,7 @@
 		};
 	};
 
+
 	tsens: tsens@fc4a8000 {
 		compatible = "qti,msm-tsens";
 		reg = <0xfc4a8000 0x2000>,
@@ -664,6 +680,25 @@
 		qti,sensors = <11>;
 		qti,slope = <3200 3200 3200 3200 3200 3200 3200 3200 3200
 				3200 3200>;
+	};
+
+	tsc: msm_tsc@fc74a000 {
+		compatible = "qti,msm-tsc";
+		reg = <0xfc74a000 0x1110>;
+		reg-names = "tsc-base";
+		interrupts = <0 267 0>, /* cam-cmd */
+					 <0 268 0>; /* card-detect */
+		interrupt-names = "cam-cmd",
+						  "card-detect";
+		qti,iommu-group = <&bcast_domain_hlos>;
+		qti,iommu-partition = <1>;
+		vdd-supply = <&gdsc_bcss>;
+		qti,msm-bus,name = "tsc-bus";
+		qti,msm-bus,num-cases = <2>;
+		qti,msm-bus,num-paths = <1>;
+		qti,msm-bus,vectors-KBps = <96 512 0 0>, /* No vote */
+									<96 512 448 896>; /* Max. 7Mbps */
+		qti,tsc-reset-cam-gpio = <&msm_gpio 138 0>;	/* reset-pin controller */
 	};
 };
 

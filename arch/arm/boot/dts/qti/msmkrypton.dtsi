@@ -71,6 +71,14 @@
 	qti,msm-imem@fe805000 {
 		compatible = "qti,msm-imem";
 		reg = <0xfe805000 0x1000>; /* Address and size of IMEM */
+		ranges = <0x0 0xfe805000 0x1000>;
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		pil@94c {
+			compatible = "qti,msm-imem-pil";
+			reg = <0x94c 200>;
+		};
 	};
 
 	qcom,msm-mem-hole {
@@ -418,6 +426,7 @@
 		qti,ipa-hw-ver = <3>; /* IPA core version = IPAv2.0 */
 		qti,ipa-hw-mode = <0>; /* IPA hw type = Normal */
 		qti,ee = <2>;
+		qti,use-ipa-tethering-bridge;
 	};
 
 	usb3: ssusb@f9200000 {
@@ -448,6 +457,7 @@
 						<61 512 0 0>,
 						<61 512 240000 960000>;
 		qti,reset_hsphy_sleep_on_init;
+		qti,no-suspend-resume;
 
 		dwc3@f9200000 {
 				compatible = "synopsys,dwc3";
@@ -456,6 +466,8 @@
 				interrupts = <0 131 0>, <0 179 0>;
 				interrupt-names = "irq", "otg_irq";
 				usb-phy = <&hsphy0>, <&ssphy0>;
+				nominal-elastic-buffer;
+				core_reset_after_phy_init;
 		};
         };
 

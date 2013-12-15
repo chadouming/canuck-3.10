@@ -24,7 +24,7 @@
 #include <linux/msm_mdp.h>
 #include <linux/memblock.h>
 
-#include <mach/iommu_domains.h>
+#include <linux/msm_iommu_domains.h>
 #include <mach/event_timer.h>
 #include <mach/msm_bus.h>
 #include <mach/scm.h>
@@ -839,6 +839,9 @@ static int mdss_mdp_overlay_start(struct msm_fb_data_type *mfd)
 	if (ctl->power_on) {
 		if (!mdp5_data->mdata->batfet)
 			mdss_mdp_batfet_ctrl(mdp5_data->mdata, true);
+		if (!is_mdss_iommu_attached() &&
+					!mfd->panel_info->cont_splash_enabled)
+			mdss_iommu_attach(mdp5_data->mdata);
 		return 0;
 	}
 
@@ -949,6 +952,9 @@ int mdss_mdp_overlay_kickoff(struct msm_fb_data_type *mfd,
 	struct mdss_mdp_ctl *tmp;
 	int ret = 0;
 	int sd_in_pipe = 0;
+
+	if (!is_mdss_iommu_attached() && !mfd->panel_info->cont_splash_enabled)
+		mdss_iommu_attach(mdp5_data->mdata);
 
 	if (ctl->shared_lock)
 		mutex_lock(ctl->shared_lock);
@@ -1815,6 +1821,8 @@ static int mdss_mdp_hw_cursor_update(struct msm_fb_data_type *mfd,
 	}
 
 	mixer = mdss_mdp_mixer_get(mdp5_data->ctl, MDSS_MDP_MIXER_MUX_DEFAULT);
+	if (!mixer)
+		return -ENODEV;
 
 	if ((img->width > MDSS_MDP_CURSOR_WIDTH) ||
 		(img->height > MDSS_MDP_CURSOR_HEIGHT) ||

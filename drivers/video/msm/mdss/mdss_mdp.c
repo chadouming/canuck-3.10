@@ -30,7 +30,6 @@
 #include <linux/pm.h>
 #include <linux/pm_runtime.h>
 #include <linux/regulator/consumer.h>
-#include <linux/memory_alloc.h>
 #include <linux/module.h>
 #include <linux/mutex.h>
 #include <linux/sched.h>
@@ -45,7 +44,7 @@
 #include <mach/msm_bus.h>
 #include <mach/msm_bus_board.h>
 #include <mach/iommu.h>
-#include <mach/iommu_domains.h>
+#include <linux/msm_iommu_domains.h>
 #include <mach/memory.h>
 #include <mach/msm_memtypes.h>
 #include <mach/rpm-regulator-smd.h>
@@ -637,6 +636,7 @@ void mdss_bus_bandwidth_ctrl(int enable)
 		if (!enable) {
 			msm_bus_scale_client_update_request(
 				mdata->bus_hdl, 0);
+			mdss_iommu_dettach(mdata);
 			pm_runtime_put(&mdata->pdev->dev);
 		} else {
 			pm_runtime_get_sync(&mdata->pdev->dev);
