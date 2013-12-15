@@ -26,64 +26,34 @@
 #include <linux/msm_tsens.h>
 #include <linux/msm_thermal.h>
 #include <asm/mach/map.h>
-#include <asm/hardware/gic.h>
 #include <asm/mach/map.h>
 #include <asm/mach/arch.h>
 #include <mach/board.h>
 #include <mach/gpiomux.h>
 #include <mach/msm_iomap.h>
-#ifdef CONFIG_ION_MSM
-#include <mach/ion.h>
-#endif
 #include <mach/msm_memtypes.h>
 #include <mach/msm_smd.h>
 #include <mach/restart.h>
 #include <mach/rpm-smd.h>
 #include <mach/rpm-regulator-smd.h>
 #include <mach/socinfo.h>
-#include <mach/msm_bus_board.h>
+#include <mach/msm_smem.h>
 #include "../board-dt.h"
 #include "../clock.h"
-#include "../devices.h"
 #include "../spm.h"
-#include "../modem_notifier.h"
-#include "../lpm_resources.h"
+#include "../pm.h"
 #include "../platsmp.h"
-#include <mach/msm_serial_hs_lite.h>
 #include <mach/board_lge.h>
-
-
-static struct memtype_reserve msm8974_reserve_table[] __initdata = {
-	[MEMTYPE_EBI0] = {
-		.flags	=	MEMTYPE_FLAGS_1M_ALIGN,
-	},
-	[MEMTYPE_EBI1] = {
-		.flags	=	MEMTYPE_FLAGS_1M_ALIGN,
-	},
-};
-
-static int msm8974_paddr_to_memtype(phys_addr_t paddr)
-{
-	return MEMTYPE_EBI1;
-}
-
-static struct reserve_info msm8974_reserve_info __initdata = {
-	.memtype_reserve_table = msm8974_reserve_table,
-	.paddr_to_memtype = msm8974_paddr_to_memtype,
-};
 
 void __init msm_8974_reserve(void)
 {
-	reserve_info = &msm8974_reserve_info;
-	of_scan_flat_dt(dt_scan_for_memory_reserve, msm8974_reserve_table);
-	msm_reserve();
+	of_scan_flat_dt(dt_scan_for_memory_reserve, NULL);
 	lge_reserve();
 }
 
 static void __init msm8974_early_memory(void)
 {
-	reserve_info = &msm8974_reserve_info;
-	of_scan_flat_dt(dt_scan_for_memory_hole, msm8974_reserve_table);
+	of_scan_flat_dt(dt_scan_for_memory_hole, NULL);
 }
 
 /*
@@ -98,14 +68,12 @@ extern void init_bcm_wifi(void);
 
 void __init msm8974_add_drivers(void)
 {
-	msm_init_modem_notifier_list();
 	msm_smd_init();
 	msm_rpm_driver_init();
-	msm_lpmrs_module_init();
+	msm_pm_sleep_status_init();
 	rpm_regulator_smd_driver_init();
 	msm_spm_device_init();
 	krait_power_init();
-	msm_clock_init(&msm8974_clock_init_data);
 	tsens_tm_init_driver();
 	msm_thermal_device_init();
 	lge_add_persistent_device();
@@ -114,13 +82,15 @@ void __init msm8974_add_drivers(void)
 #endif
 }
 
+static struct of_dev_auxdata msm_hsic_host_adata[] = {
+	OF_DEV_AUXDATA("qcom,hsic-host", 0xF9A00000, "msm_hsic_host", NULL),
+	{}
+};
+
 static struct of_dev_auxdata msm8974_auxdata_lookup[] __initdata = {
-	OF_DEV_AUXDATA("qcom,hsusb-otg", 0xF9A55000, \
-			"msm_otg", NULL),
-	OF_DEV_AUXDATA("qcom,ehci-host", 0xF9A55000, \
-			"msm_ehci_host", NULL),
-	OF_DEV_AUXDATA("qcom,dwc-usb3-msm", 0xF9200000, \
-			"msm_dwc3", NULL),
+	OF_DEV_AUXDATA("qcom,hsusb-otg", 0xF9A55000, "msm_otg", NULL),
+	OF_DEV_AUXDATA("qti,ehci-host", 0xF9A55000, "msm_ehci_host", NULL),
+	OF_DEV_AUXDATA("qti,dwc-usb3-msm", 0xF9200000, "msm_dwc3", NULL),
 	OF_DEV_AUXDATA("qcom,usb-bam-msm", 0xF9304000, \
 			"usb_bam", NULL),
 	OF_DEV_AUXDATA("qcom,spi-qup-v2", 0xF9924000, \
@@ -154,6 +124,8 @@ static struct of_dev_auxdata msm8974_auxdata_lookup[] __initdata = {
 			"qcrypto.0", NULL),
 	OF_DEV_AUXDATA("qcom,hsic-host", 0xF9A00000, \
 			"msm_hsic_host", NULL),
+	OF_DEV_AUXDATA("qcom,hsic-smsc-hub", 0, "msm_smsc_hub",
+			msm_hsic_host_adata),
 	{}
 };
 
@@ -166,18 +138,21 @@ void __init msm8974_init(void)
 {
 	struct of_dev_auxdata *adata = msm8974_auxdata_lookup;
 
+	/*
+	 * populate devices from DT first so smem probe will get called as part
+	 * of msm_smem_init.  socinfo_init needs smem support so call
+	 * msm_smem_init before it.  msm_8974_init_gpiomux needs socinfo so
+	 * call socinfo_init before it.
+	 */
+	board_dt_populate(adata);
+
+	msm_smem_init();
+
 	if (socinfo_init() < 0)
 		pr_err("%s: socinfo_init() failed\n", __func__);
 
-	/*
-	 * disable the uart console
-	 * it will be enabled if detected earjack debugger
-	 */
-	msm_console_set_enable(false);
-
 	msm_8974_init_gpiomux();
 	regulator_has_full_constraints();
-	board_dt_populate(adata);
 	msm8974_add_drivers();
 }
 
@@ -188,6 +163,7 @@ void __init msm8974_init_very_early(void)
 
 static const char *msm8974_dt_match[] __initconst = {
 	"qcom,msm8974",
+	"qcom,apq8074",
 	NULL
 };
 
@@ -195,8 +171,6 @@ DT_MACHINE_START(MSM8974_DT, "Qualcomm MSM 8974 HAMMERHEAD (Flattened Device Tre
 	.map_io = msm8974_map_io,
 	.init_irq = msm_dt_init_irq,
 	.init_machine = msm8974_init,
-	.handle_irq = gic_handle_irq,
-	.timer = &msm_dt_timer,
 	.dt_compat = msm8974_dt_match,
 	.reserve = msm_8974_reserve,
 	.init_very_early = msm8974_init_very_early,
