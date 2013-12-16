@@ -1540,7 +1540,7 @@ static void qpnp_led_set(struct led_classdev *led_cdev,
 static void __qpnp_led_work(struct qpnp_led_data *led,
 				enum led_brightness value)
 {
-	int rc;
+	int rc = 0;
 
 	mutex_lock(&led->lock);
 
