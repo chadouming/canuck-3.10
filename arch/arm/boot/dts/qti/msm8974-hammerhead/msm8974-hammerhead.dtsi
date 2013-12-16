@@ -10,16 +10,16 @@
  * GNU General Public License for more details.
  */
 
-/include/ "msm8974-hammerhead-panel.dtsi"
-/include/ "msm8974-hammerhead-input.dtsi"
-/include/ "msm8974-hammerhead-hdmi.dtsi"
-/include/ "msm8974-hammerhead-usb.dtsi"
-/include/ "msm8974-hammerhead-misc.dtsi"
-/include/ "msm8974-hammerhead-pm.dtsi"
-/include/ "msm8974-hammerhead-camera.dtsi"
-/include/ "msm8974-hammerhead-nfc.dtsi"
-/include/ "msm8974-hammerhead-regulator.dtsi"
-/include/ "msm8974-hammerhead-sensor.dtsi"
+#include "msm8974-hammerhead-panel.dtsi"
+#include "msm8974-hammerhead-input.dtsi"
+#include "msm8974-hammerhead-hdmi.dtsi"
+#include "msm8974-hammerhead-usb.dtsi"
+#include "msm8974-hammerhead-misc.dtsi"
+#include "msm8974-hammerhead-pm.dtsi"
+#include "msm8974-hammerhead-camera.dtsi"
+#include "msm8974-hammerhead-nfc.dtsi"
+#include "msm8974-hammerhead-regulator.dtsi"
+#include "msm8974-hammerhead-sensor.dtsi"
 
 / {
 	aliases {

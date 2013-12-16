@@ -13,8 +13,8 @@
 
 /dts-v1/;
 
-/include/ "msm8974-lge-common/msm8974-v2.2-lge.dtsi"
-/include/ "msm8974-hammerhead/msm8974-hammerhead-rev-11.dtsi"
+#include "msm8974-lge-common/msm8974-v2.2-lge.dtsi"
+#include "msm8974-hammerhead/msm8974-hammerhead-rev-11.dtsi"
 
 / {
 	model = "LGE MSM 8974 HAMMERHEAD";

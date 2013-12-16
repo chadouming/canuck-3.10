@@ -10,14 +10,14 @@
  * GNU General Public License for more details.
  */
 
-/include/ "../msm8974-leds.dtsi"
+#include "../msm8974-leds.dtsi"
 
-/include/ "msm8974-lge-panel.dtsi"
-/include/ "msm8974-lge-input.dtsi"
-/include/ "msm8974-lge-hdmi.dtsi"
-/include/ "msm8974-lge-usb.dtsi"
-/include/ "msm8974-lge-misc.dtsi"
-/include/ "msm8974-lge-pm.dtsi"
+#include "msm8974-lge-panel.dtsi"
+#include "msm8974-lge-input.dtsi"
+#include "msm8974-lge-hdmi.dtsi"
+#include "msm8974-lge-usb.dtsi"
+#include "msm8974-lge-misc.dtsi"
+#include "msm8974-lge-pm.dtsi"
 
 &soc {
 	serial@f991d000 {
