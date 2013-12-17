@@ -162,6 +162,16 @@
 		#address-cells = <1>;
 		#size-cells = <1>;
 
+		mem_dump_table@14 {
+			compatible = "qti,msm-imem-mem_dump_table";
+			reg = <0x14 4>;
+		};
+
+		boot_stats@6b0 {
+			compatible = "qti,msm-imem-boot_stats";
+			reg = <0x6b0 32>;
+		};
+
 		pil@94c {
 			compatible = "qti,msm-imem-pil";
 			reg = <0x94c 200>;
@@ -561,6 +571,7 @@
 		qti,gpio-err-fatal = <&smp2pgpio_ssr_smp2p_2_in 0 0>;
 		qti,gpio-proxy-unvote = <&smp2pgpio_ssr_smp2p_2_in 2 0>;
 		qti,gpio-err-ready = <&smp2pgpio_ssr_smp2p_2_in 1 0>;
+		qti,gpio-stop-ack = <&smp2pgpio_ssr_smp2p_2_in 3 0>;
 
 		/* GPIO output to lpass */
 		qti,gpio-force-stop = <&smp2pgpio_ssr_smp2p_2_out 0 0>;
@@ -621,7 +632,9 @@
 			<0x800A8 0x00003FFF>,
 			<0xe0020 0x5555556>,
 			<0xe0024 0x5555556>,
-			<0x80124 0x3>;
+			<0x80124 0x3>,
+			<0x800E4 0x0>,
+			<0x800D8 0x707>;
 		qcom,enc-ocmem-ab-ib = <0 0>,
 			<138000 1034000>,
 			<414000 1034000>,

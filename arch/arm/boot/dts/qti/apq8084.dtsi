@@ -236,6 +236,7 @@
 		compatible = "qti,cache_erp";
 		interrupts = <1 9 0>, <0 2 0>;
 		interrupt-names = "l1_irq", "l2_irq";
+		qti,msm-imem-phandle = <&imem_cache_erp>;
 	};
 
 	qcom,cache_dump {
@@ -256,6 +257,21 @@
 		ranges = <0x0 0xfe805000 0x1000>;
 		#address-cells = <1>;
 		#size-cells = <1>;
+
+		mem_dump_table@14 {
+			compatible = "qti,msm-imem-mem_dump_table";
+			reg = <0x14 4>;
+		};
+
+		imem_cache_erp: cache_erp@6a4 {
+			compatible = "qti,msm-imem-cache_erp";
+			reg = <0x6a4 4>;
+		};
+
+		boot_stats@6b0 {
+			compatible = "qti,msm-imem-boot_stats";
+			reg = <0x6b0 32>;
+		};
 
 		pil@94c {
 			compatible = "qti,msm-imem-pil";
@@ -2089,6 +2105,7 @@
 		qti,gpio-err-fatal = <&smp2pgpio_ssr_smp2p_2_in 0 0>;
 		qti,gpio-proxy-unvote = <&smp2pgpio_ssr_smp2p_2_in 2 0>;
 		qti,gpio-err-ready = <&smp2pgpio_ssr_smp2p_2_in 1 0>;
+		qti,gpio-stop-ack = <&smp2pgpio_ssr_smp2p_2_in 3 0>;
 
 		/* GPIO output to lpass */
 		qti,gpio-force-stop = <&smp2pgpio_ssr_smp2p_2_out 0 0>;
