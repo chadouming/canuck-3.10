@@ -30,20 +30,20 @@
 		#address-cells = <2>;
 		#size-cells = <2>;
 
-		qsecom_mem: qsecom_region {
+		qsecom_mem: qsecom_region@0 {
 			linux,contiguous-region;
 			reg = <0 0 0 0x1100000>;
 			label = "qseecom_mem";
                 };
 
-		fb_mem: fb_region {
+		fb_mem: fb_region@0 {
 			linux,contiguous-region;
 			reg = <0 0 0 0x1000000>;
 			label = "fb_mem";
 			linux,memory-limit = <0xffffffff>;
 		};
 
-		secure_mem: secure_region {
+		secure_mem: secure_region@0 {
 			linux,contiguous-region;
 			reg = <0 0 0 0xfc00000>;
 			label = "secure_mem";
@@ -324,6 +324,19 @@
 		interrupt-names = "core_irq";
 
 		qcom,bus-width = <8>;
+		qcom,msm-bus,name = "sdcc1";
+		qcom,msm-bus,num-cases = <8>;
+		qcom,msm-bus,num-paths = <1>;
+		qcom,msm-bus,vectors-KBps = <78 512 0 0>, /* No vote */
+				<78 512 1600 3200>,    /* 400 KB/s*/
+				<78 512 80000 160000>, /* 20 MB/s */
+				<78 512 100000 200000>, /* 25 MB/s */
+				<78 512 200000 400000>, /* 50 MB/s */
+				<78 512 400000 800000>, /* 100 MB/s */
+				<78 512 400000 800000>, /* 200 MB/s */
+				<78 512 2048000 4096000>; /* Max. bandwidth */
+		qcom,bus-bw-vectors-bps = <0 400000 20000000 25000000 50000000
+						100000000 200000000 4294967295>;
 		status = "disabled";
 	};
 
@@ -366,7 +379,7 @@
 		qcom,bus-width = <4>;
 		qcom,cpu-dma-latency-us = <200>;
 
-		qcom,msm-bus,name = "sdhc2";
+		qcom,msm-bus,name = "sdcc2";
 		qcom,msm-bus,num-cases = <8>;
 		qcom,msm-bus,num-paths = <1>;
 		qcom,msm-bus,vectors-KBps = <81 512 0 0>, /* No vote */
@@ -392,6 +405,20 @@
 		interrupt-names = "hc_irq", "pwr_irq";
 
 		qcom,bus-width = <4>;
+
+		qcom,msm-bus,name = "sdhc2";
+		qcom,msm-bus,num-cases = <8>;
+		qcom,msm-bus,num-paths = <1>;
+		qcom,msm-bus,vectors-KBps = <81 512 0 0>, /* No vote */
+				<81 512 1600 3200>,    /* 400 KB/s*/
+				<81 512 80000 160000>, /* 20 MB/s */
+				<81 512 100000 200000>, /* 25 MB/s */
+				<81 512 200000 400000>, /* 50 MB/s */
+				<81 512 400000 800000>, /* 100 MB/s */
+				<81 512 800000 800000>, /* 200 MB/s */
+				<81 512 2048000 4096000>; /* Max. bandwidth */
+		qcom,bus-bw-vectors-bps = <0 400000 20000000 25000000 50000000
+						100000000 200000000 4294967295>;
 		status = "disabled";
 	};
 
@@ -1761,7 +1788,7 @@
 
 	usb_otg: usb@f9a55000 {
 		status = "disabled";
-		compatible = "qcom,hsusb-otg";
+		compatible = "qti,hsusb-otg";
 
 		reg = <0xf9a55000 0x400>;
 		interrupts = <0 134 0 0 140 0>;
@@ -1769,18 +1796,18 @@
 		HSUSB_VDDCX-supply = <&pma8084_s1>;
 		HSUSB_1p8-supply = <&pma8084_l6>;
 		HSUSB_3p3-supply = <&pma8084_l24>;
-		qcom,vdd-voltage-level = <0 900000 1050000>;
+		qti,vdd-voltage-level = <0 900000 1050000>;
 
-		qcom,hsusb-otg-phy-type = <2>;
-		qcom,hsusb-otg-mode = <1>;
-		qcom,hsusb-otg-otg-control = <3>;
-		qcom,hsusb-otg-default-mode = <1>;
-		qcom,dp-manual-pullup;
+		qti,hsusb-otg-phy-type = <2>;
+		qti,hsusb-otg-mode = <1>;
+		qti,hsusb-otg-otg-control = <3>;
+		qti,hsusb-otg-default-mode = <1>;
+		qti,dp-manual-pullup;
 
-		qcom,msm-bus,name = "usb2";
-		qcom,msm-bus,num-cases = <2>;
-		qcom,msm-bus,num-paths = <1>;
-		qcom,msm-bus,vectors-KBps =
+		qti,msm-bus,name = "usb2";
+		qti,msm-bus,num-cases = <2>;
+		qti,msm-bus,num-paths = <1>;
+		qti,msm-bus,vectors-KBps =
 				<87 512 0 0>,
 				<87 512 60000 960000>;
 	};
